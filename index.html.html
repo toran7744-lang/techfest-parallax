@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Techfest 2026 | Interactive Cyber-Nexus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- BASE STYLES --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: #020204;
+            color: #ffffff;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* --- PARALLAX HERO ENGINE --- */
+        .hero-container {
+            position: relative;
+            width: 100vw;
+            height: 150vh; /* Extended height for a very deep initial scroll */
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 35vh;
+            perspective: 1200px; 
+        }
+
+        /* Deep Space Grid (Rotated in 3D) */
+        .p-layer-grid {
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.08) 1px, transparent 1px);
+            background-size: 60px 60px;
+            transform: rotateX(70deg) translateY(-100px) translateZ(-600px);
+            z-index: 1;
+            transform-origin: center center;
+            will-change: transform;
+        }
+
+        /* Cyber Planet */
+        .p-layer-planet {
+            position: absolute;
+            top: 10%; right: 5%;
+            width: 450px; height: 450px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 25% 25%, #00f3ff, #0a0a2a 50%, #000000 85%);
+            box-shadow: 0 0 120px rgba(0, 243, 255, 0.2), inset -30px -30px 60px rgba(0,0,0,0.9);
+            z-index: 2;
+            will-change: transform;
+        }
+
+        /* Tech Rings (Orbiting Elements) */
+        .p-layer-rings {
+            position: absolute;
+            top: 25%; left: 0%;
+            width: 500px; height: 500px;
+            border: 2px dashed rgba(255, 0, 255, 0.3);
+            border-radius: 50%;
+            z-index: 3;
+            box-shadow: 0 0 40px rgba(255, 0, 255, 0.1);
+            will-change: transform;
+        }
+        
+        .p-layer-rings::after {
+            content: '';
+            position: absolute;
+            top: -40px; left: -40px; right: -40px; bottom: -40px;
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 50%;
+        }
+
+        /* Main Hero Typography */
+        .p-layer-text {
+            position: relative;
+            text-align: center;
+            z-index: 10;
+            text-transform: uppercase;
+            will-change: transform, opacity;
+        }
+
+        .p-layer-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 7rem;
+            font-weight: 900;
+            letter-spacing: 12px;
+            background: linear-gradient(180deg, #ffffff 0%, #00f3ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 25px rgba(0, 243, 255, 0.5));
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .p-layer-text h2 {
+            font-size: 2.2rem;
+            color: #fff;
+            letter-spacing: 10px;
+            opacity: 0.9;
+        }
+
+        .scroll-prompt {
+            position: absolute;
+            bottom: 15vh;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            font-family: 'Orbitron', sans-serif;
+            color: #00f3ff;
+            letter-spacing: 4px;
+            font-size: 0.9rem;
+            animation: pulse 2s infinite;
+        }
+
+        /* --- CONTENT SECTIONS --- */
+        .section-wrapper {
+            position: relative;
+            background: linear-gradient(180deg, #020204 0%, #080812 50%, #020204 100%);
+            z-index: 20;
+            padding: 100px 20px 150px;
+            box-shadow: 0 -30px 60px rgba(0,0,0,0.9);
+            border-top: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-header h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+        }
+
+        .section-header p {
+            font-size: 1.3rem;
+            color: #888;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Grid Layouts */
+        .cyber-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-bottom: 120px;
+        }
+
+        /* Glassmorphism Cyber Cards */
+        .cyber-card {
+            background: rgba(10, 10, 20, 0.6);
+            border: 1px solid rgba(0, 243, 255, 0.15);
+            border-radius: 16px;
+            padding: 50px 30px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+        }
+
+        .cyber-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, #00f3ff, #ff00ff);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .cyber-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 243, 255, 0.1);
+            border-color: rgba(0, 243, 255, 0.4);
+        }
+
+        .cyber-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 25px;
+            display: inline-block;
+            filter: drop-shadow(0 0 10px rgba(0, 243, 255, 0.6));
+        }
+
+        .cyber-card h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            color: #00f3ff;
+            margin-bottom: 15px;
+        }
+
+        .cyber-card p {
+            font-size: 1.15rem;
+            color: #b3b3b3;
+            line-height: 1.6;
+        }
+
+        /* --- SCROLL REVEAL ANIMATIONS (Triggered via JS) --- */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(80px);
+            transition: all 0.9s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-80px);
+            transition: all 0.9s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(80px);
+            transition: all 0.9s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        
+        .is-visible {
+            opacity: 1;
+            transform: translate(0, 0);
+        }
+
+        /* --- FOOTER IDENTITY --- */
+        footer {
+            background: #010103;
+            padding: 80px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            z-index: 30;
+        }
+
+        .architect-badge {
+            display: inline-block;
+            padding: 30px 60px;
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.03) 0%, rgba(0, 0, 0, 0) 100%);
+            border: 1px solid rgba(0, 243, 255, 0.15);
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .architect-badge::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; left: 10%; right: 10%; height: 1px;
+            background: #00f3ff;
+            box-shadow: 0 0 15px #00f3ff;
+        }
+
+        .architect-badge span.label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .architect-badge strong {
+            font-family: 'Orbitron', sans-serif;
+            color: #ffffff;
+            font-size: 1.8rem;
+            display: block;
+            margin: 10px 0;
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+
+        .architect-badge span.credentials {
+            color: #00f3ff;
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: translateX(-50%) translateY(0); }
+            50% { opacity: 1; transform: translateX(-50%) translateY(10px); }
+        }
+
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            .p-layer-text h1 { font-size: 3.5rem; letter-spacing: 5px; }
+            .p-layer-planet { width: 250px; height: 250px; right: -20px; top: 15%; }
+            .section-header h3 { font-size: 2.2rem; }
+            .cyber-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================= PARALLAX HERO ================= -->
+    <div class="hero-container">
+        <!-- Parallax Backgrounds -->
+        <div class="p-layer-grid" id="prlx-grid"></div>
+        <div class="p-layer-planet" id="prlx-planet"></div>
+        <div class="p-layer-rings" id="prlx-rings"></div>
+        
+        <!-- Parallax Foreground -->
+        <div class="p-layer-text" id="prlx-text">
+            <h1>TECHFEST</h1>
+            <h2>IIT BOMBAY 2026</h2>
+        </div>
+
+        <div class="scroll-prompt">INITIATE SCROLL</div>
+    </div>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <div class="section-wrapper">
+        <div class="container">
+            
+            <!-- Category 1: The Nexus of Tomorrow -->
+            <div class="section-header reveal-up">
+                <h3>The Nexus of Tomorrow</h3>
+                <p>Dive into the foundational technologies shaping the next century of human evolution.</p>
+            </div>
+
+            <div class="cyber-grid">
+                <!-- Quantum Computing -->
+                <div class="cyber-card reveal-left">
+                    <div class="card-icon">⚛️</div>
+                    <h4>Quantum Computing</h4>
+                    <p>Experience the sheer processing power of qubits. Engage with leading researchers to decode complex quantum algorithms, superposition mechanics, and the future of cryptography.</p>
+                </div>
+                
+                <!-- Cybernetics -->
+                <div class="cyber-card reveal-up" style="transition-delay: 0.1s;">
+                    <div class="card-icon">🦾</div>
+                    <h4>Cybernetics</h4>
+                    <p>Witness the seamless integration of man and machine. Explore neural interfaces, advanced biomechatronics, and next-generation prosthetics redefining human capabilities.</p>
+                </div>
+                
+                <!-- AI Nexus -->
+                <div class="cyber-card reveal-right" style="transition-delay: 0.2s;">
+                    <div class="card-icon">🧠</div>
+                    <h4>AI Nexus</h4>
+                    <p>Step into the mind of the machine. Interact with self-learning neural networks, autonomous agents, and generative AI models engineered to solve real-world crises.</p>
+                </div>
+            </div>
+
+            <!-- Category 2: Battlegrounds & Innovation -->
+            <div class="section-header reveal-up" style="margin-top: 150px;">
+                <h3 style="color: #ff00ff; text-shadow: 0 0 20px rgba(0, 243, 255, 0.3);">Battlegrounds & Innovation</h3>
+                <p>Compete against the brightest minds across Asia or witness groundbreaking prototypes live.</p>
+            </div>
+
+            <div class="cyber-grid">
+                <!-- RoboWars -->
+                <div class="cyber-card reveal-left">
+                    <div class="card-icon">⚔️</div>
+                    <h4>RoboWars</h4>
+                    <p>The ultimate arena of metal and mayhem. Watch as custom-engineered combat robots clash in a high-stakes battle of durability, strategy, and engineering supremacy.</p>
+                </div>
+                
+                <!-- Hackathons -->
+                <div class="cyber-card reveal-up" style="transition-delay: 0.1s;">
+                    <div class="card-icon">💻</div>
+                    <h4>Hackathons</h4>
+                    <p>48 hours of relentless coding. Join thousands of developers to architect disruptive solutions in Web3, cybersecurity, and decentralized finance.</p>
+                </div>
+                
+                <!-- Exhibitions -->
+                <div class="cyber-card reveal-right" style="transition-delay: 0.2s;">
+                    <div class="card-icon">🚀</div>
+                    <h4>Exhibitions</h4>
+                    <p>Walk through a showcase of tomorrow. Experience interactive displays featuring futuristic transport, space-tech prototypes, and augmented reality environments.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ================= FOOTER ================= -->
+    <footer>
+        <div class="architect-badge reveal-up">
+            <span class="label">System Architecture By</span><br>
+            <strong>TORAN BHATT</strong>
+            <span class="credentials">1st Year MBA, IIT Patna</span>
+        </div>
+    </footer>
+
+    <!-- ================= SCRIPTS ================= -->
+    <script>
+        // --- 1. ADVANCED PARALLAX & CURSOR TRACKING ENGINE ---
+        const planet = document.getElementById('prlx-planet');
+        const text = document.getElementById('prlx-text');
+        const rings = document.getElementById('prlx-rings');
+        const grid = document.getElementById('prlx-grid');
+
+        // Mouse tracking variables
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetMouseX = 0;
+        let targetMouseY = 0;
+
+        // Smooth cursor interpolation
+        function lerp(start, end, factor) {
+            return start + (end - start) * factor;
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            // Normalize mouse coordinates (-1 to 1)
+            targetMouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            targetMouseY = (e.clientY / window.innerHeight) * 2 - 1;
+        });
+
+        // Main Animation Loop for Parallax + Mouse
+        function animateEngine() {
+            let scrollY = window.scrollY;
+
+            // Smooth out mouse movements
+            mouseX = lerp(mouseX, targetMouseX, 0.05);
+            mouseY = lerp(mouseY, targetMouseY, 0.05);
+
+            // Layer 1: Grid (Scroll dictates perspective depth, Mouse dictates slight tilt)
+            grid.style.transform = `rotateX(${70 + mouseY * 5}deg) rotateY(${mouseX * 5}deg) translateY(${-100 + scrollY * 0.4}px) translateZ(-600px)`;
+
+            // Layer 2: Planet (Scroll moves it down slowly and rotates, Mouse shifts it opposite)
+            planet.style.transform = `translate(${mouseX * -30}px, ${scrollY * 0.3 + mouseY * -30}px) rotate(${scrollY * 0.05}deg)`;
+
+            // Layer 3: Rings (Scroll moves them up and scales them, Mouse shifts them aggressively)
+            rings.style.transform = `translate(${mouseX * 40}px, ${scrollY * -0.2 + mouseY * 40}px) scale(${1 + scrollY * 0.001}) rotate(${scrollY * -0.1}deg)`;
+
+            // Layer 4: Text (Scroll fades and scales down to create massive depth)
+            let textScale = Math.max(0.5, 1 - scrollY * 0.0015);
+            let textOpacity = Math.max(0, 1 - scrollY * 0.0025);
+            text.style.transform = `translate(${mouseX * 15}px, ${scrollY * 0.5 + mouseY * 15}px) scale(${textScale})`;
+            text.style.opacity = textOpacity;
+
+            requestAnimationFrame(animateEngine);
+        }
+        
+        // Start the engine
+        animateEngine();
+
+
+        // --- 2. INTERSECTION OBSERVER (Scroll Reveals) ---
+        // Configured to trigger when 15% of the element is visible
+        const revealOptions = {
+            threshold: 0.15,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const observer = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                
+                // Add the visible class to trigger CSS transition
+                entry.target.classList.add('is-visible');
+                
+                // Unobserve once revealed for performance
+                observer.unobserve(entry.target);
+            });
+        }, revealOptions);
+
+        // Select all elements with reveal classes and observe them
+        const revealElements = document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right');
+        revealElements.forEach(el => observer.observe(el));
+
+    </script>
+</body>
+</html>
